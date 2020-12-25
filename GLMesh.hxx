@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLMesh.hxx $
+// $Id: GLMesh.hxx 2020/12/25 22:41:51 kanai Exp $
 //
 //   Generic OpenGL Mesh draw class
 //
@@ -46,6 +46,7 @@ protected:
   bool isDrawShading_;
   bool isDrawWireframe_;
   bool isDrawPoint_;
+  bool isDrawColor_;
 
   bool isDrawTexture_;
 
@@ -58,6 +59,7 @@ public:
 
   void init() {
     isDrawShading_ = true;
+    isDrawColor_ = false;
     isDrawWireframe_ = false;
     isDrawPoint_ = false;
     isDrawTexture_ = false;
@@ -142,6 +144,7 @@ public:
   void setIsDrawPoint( bool f ) { isDrawPoint_ = f; };
   void setIsDrawWireframe( bool f ) { isDrawWireframe_ = f; };
   void setIsDrawShading( bool f ) { isDrawShading_ = f; };
+  void setIsDrawColor( bool f ) { isDrawColor_ = f; };
   void setIsDrawTexture( bool f ) { isDrawTexture_ = f; };
   void setIsSmoothShading( bool f ) { 
     isSmoothShading_ = f; 
@@ -157,6 +160,7 @@ public:
   bool isDrawPoint() const { return isDrawPoint_; };
   bool isDrawWireframe() const { return isDrawWireframe_; };
   bool isDrawShading() const { return isDrawShading_; };
+  bool isDrawColor() const { return isDrawColor_; };
   bool isDrawTexture() const { return isDrawTexture_; };
   bool isSmoothShading() const { return isSmoothShading_; };
 

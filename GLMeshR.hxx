@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: $
+// $Id: GLMeshR.hxx 2020/12/26 00:01:00 kanai Exp $
 //
 //   OpenGL MeshR draw class
 //
@@ -27,7 +27,19 @@ public:
   ~GLMeshR() {};
 
   void clear() { if ( mesh_ ) deleteMesh(); };
-  void setMesh( MeshR& mesh ) { mesh_ = &mesh; };
+  void setMesh( MeshR& mesh ) {
+    mesh_ = &mesh;
+    if ( !mesh.colors().empty() )
+      {
+        setIsDrawColor( true );
+        setIsDrawShading( false );
+      }
+    else
+      {
+        setIsDrawColor( false );
+        setIsDrawShading( true );
+      }
+  };
   void setMeshP( MeshR* mesh ) { mesh_ = mesh; };
   MeshR& mesh() { return *mesh_; };
   MeshR* meshP() { return mesh_; };
@@ -51,12 +63,43 @@ public:
     if ( empty() ) return;
 
     ::glPushMatrix();
+    if ( isDrawColor_ ) { drawColor(); };
     if ( isDrawShading_ ) { drawShading(); }
     if ( isDrawWireframe_ ) { drawWireframe(); };
     if ( isDrawPoint_ ) { drawPoints(); };
     ::glPopMatrix();
   };
   //void draw() { draw( mesh_ ); };
+
+  void drawColor() {
+    if ( empty() ) return;
+
+    ::glShadeModel( GL_FLAT );
+    ::glDisable( GL_LIGHTING );
+
+    std::vector<float>& points = mesh().points();
+    std::vector<unsigned int>& indices = mesh().indices();
+    std::vector<unsigned char>& colors = mesh().colors();
+
+    ::glBegin( GL_TRIANGLES );
+    unsigned int n_id = 0;
+    for ( unsigned int i = 0; i < mesh().numFaces(); ++i )
+      {
+        unsigned int id0 = indices[TRIANGLE * i];
+        unsigned int id1 = indices[TRIANGLE * i + 1];
+        unsigned int id2 = indices[TRIANGLE * i + 2];
+
+        ::glColor3ubv( &(colors[ nXYZ * id0 ]) );
+        ::glVertex3fv( &(points[ nXYZ * id0 ]) );
+
+        ::glColor3ubv( &(colors[ nXYZ * id1 ]) );
+        ::glVertex3fv( &(points[ nXYZ * id1 ]) );
+
+        ::glColor3ubv( &(colors[ nXYZ * id2 ]) );
+        ::glVertex3fv( &(points[ nXYZ * id2 ]) );
+      }
+    ::glEnd();
+  };
 
   void drawShading() {
     if ( empty() ) return;
@@ -112,10 +155,8 @@ public:
     else
       {
         std::vector<float>& points = mesh().points();
-        //    std::vector<float>& normals = mesh().normals();
         std::vector<float>& fnormals = mesh().fnormals();
         std::vector<unsigned int>& indices = mesh().indices();
-        //    std::vector<unsigned int>& nindices = mesh().nindices();
 
 #if 1 // for large model
         ::glBegin( GL_TRIANGLES );
