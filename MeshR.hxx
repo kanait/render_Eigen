@@ -1,10 +1,10 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: $
+// $Id: MeshR.hxx 2020/12/26 16:40:49 kanai Exp $
 //
 // Mesh class for Rendering
 //
-// Copyright (c) 2003-2017 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2003-2020 by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 
@@ -53,6 +53,7 @@ public:
     indices_.clear();
     nindices_.clear();
     eindices_.clear();
+    tindices_.clear();
     fnormals_.clear();
     face_mates_.clear();
     s_begin_.clear();
@@ -70,6 +71,7 @@ public:
     n_indices_ = 0;
     n_nindices_ = 0;
     n_eindices_ = 0;
+    n_tindices_ = 0;
     n_tex_ = 2; // x, y coordinates
 
     tex_id_ = -1;
@@ -102,6 +104,7 @@ public:
   unsigned int indices_size() const { return n_indices_; };
   unsigned int nindices_size() const { return n_nindices_; };
   unsigned int eindices_size() const { return n_eindices_; };
+  unsigned int tindices_size() const { return n_tindices_; };
 
   std::vector<float>& points() { return points_; };
   std::vector<float>& normals() { return normals_; };
@@ -111,6 +114,7 @@ public:
   std::vector<unsigned int>& indices() { return indices_; };
   std::vector<unsigned int>& nindices() { return nindices_; };
   std::vector<unsigned int>& eindices() { return eindices_; };
+  std::vector<unsigned int>& tindices() { return tindices_; };
   std::vector<float>& fnormals() { return fnormals_; };
   std::vector<int>& face_mates() { return face_mates_; };
   std::vector<unsigned int>& s_begin() { return s_begin_; };
@@ -123,6 +127,7 @@ public:
   int index( int i ) const { return indices_[i]; };
   int nindex( int i ) const { return nindices_[i]; };
   int eindex( int i ) const { return eindices_[i]; };
+  int tindex( int i ) const { return tindices_[i]; };
   float fnormal( int i ) const { return fnormals_[i]; };
   int face_mate( int i ) const { return face_mates_[i]; };
 
@@ -190,6 +195,10 @@ public:
 
   void addEIndex( unsigned int i ) {
     eindices_.push_back( i ); n_eindices_++;
+  };
+
+  void addTIndex( unsigned int i ) {
+    tindices_.push_back( i ); n_tindices_++;
   };
 
   void addPoint( float x, float y, float z ) {
@@ -296,21 +305,28 @@ public:
     eindices_[i] = f;
   };
 
+  void setTIndex( int i, unsigned int f ) {
+    tindices_[i] = f;
+  };
+
   void deleteTexcoords() { texcoords_.clear(); n_texcoords_ = 0; };
 
   // reserve
   void reservePoints( int n )  { n_points_  = n * nXYZ;     points_.resize( n_points_ ); };
   void reserveNormals( int n ) { n_normals_ = n * nXYZ;     normals_.resize( n_normals_ ); };
   void reserveTexcoords( int n, int t ) { n_texcoords_ = n * t; texcoords_.resize( n_texcoords_ ); };
-  void reserveColors( int n ) { n_colors_ = n * nXYZ;       colors_.resize( n_colors_ ); };
-  void reserveColorIds( int n ) { n_color_ids_ = n;         color_ids_.resize( n_color_ids_ ); };
-  void reserveIndices( int n ) { n_indices_ = n * TRIANGLE; indices_.resize( n_indices_ ); };
-  void reserveNIndices( int n ) { n_nindices_ = n * TRIANGLE; nindices_.resize( n_nindices_ ); };
+  void reserveColors( int n ) { n_colors_ = n * nXYZ;       colors_.reserve( n_colors_ ); };
+  void reserveColorIds( int n ) { n_color_ids_ = n;         color_ids_.reserve( n_color_ids_ ); };
+  void reserveIndices( int n ) { n_indices_ = n * TRIANGLE; indices_.reserve( n_indices_ ); };
+  void reserveNIndices( int n ) { n_nindices_ = n * TRIANGLE; nindices_.reserve( n_nindices_ ); };
+  void reserveTIndices( int n ) { n_tindices_ = n * TRIANGLE; tindices_.reserve( n_tindices_ ); };
 
   // resize
   void resizePoints( int n )  { n_points_  += (n * nXYZ);     points_.resize( n_points_ ); };
   void resizeNormals( int n ) { n_normals_ += (n * nXYZ);     normals_.resize( n_normals_ ); };
   void resizeIndices( int n ) { n_indices_ += (n * TRIANGLE); indices_.resize( n_indices_ ); };
+  void resizeNndices( int n ) { n_nindices_ += (n * TRIANGLE); nindices_.resize( n_nindices_ ); };
+  void resizeTindices( int n ) { n_tindices_ += (n * TRIANGLE); tindices_.resize( n_tindices_ ); };
 
   void getFacePoints( unsigned int face_id, Eigen::Vector3f& p0, Eigen::Vector3f& p1, Eigen::Vector3f& p2 ) {
     unsigned int i0 = nXYZ * indices_[ TRIANGLE * face_id ];
@@ -973,6 +989,10 @@ private:
   // edge indices
   unsigned int n_eindices_;
   std::vector<unsigned int> eindices_;
+
+  // texcoord indices
+  unsigned int n_tindices_;
+  std::vector<unsigned int> tindices_;
 
   //   int n_indices_;
   //   std::vector<unsigned int> normal_indices_;
