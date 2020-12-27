@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2020/12/27 16:35:49 kanai Exp $
+// $Id: GLPanel.hxx 2020/12/27 18:00:10 kanai Exp $
 //
 // Copyright (c) 2002-2020 by Takashi Kanai. All rights reserved. 
 //
@@ -1082,6 +1082,34 @@ public:
                     format, GL_UNSIGNED_BYTE, &(img[0]) );
 #endif
     ::glBindTexture( GL_TEXTURE_2D, 0 );
+  };
+
+  //
+  // window capture functions
+  //
+  void capture( unsigned char* image, int w, int h, int channel ) {
+
+    // temporal capture
+    std::vector<unsigned char> tcap( w * h * channel );
+    ::glFlush();
+    if ( channel == 4 ) // RGB + depth
+      ::glReadPixels( 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &(tcap[0]) );
+    else if ( channel == 3 ) // RGB
+      ::glReadPixels( 0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, &(tcap[0]) );
+
+#if 1
+    // flip
+    for ( int i = 0; i < h; ++i ) {
+      for ( int j = 0; j < w; ++j ) {
+        int ni = channel * (w * (h - 1 - i) + j);
+        int pi = channel * (w * i + j);
+        for ( int k = 0; k < channel; ++k ) {
+          image[ni+k] = tcap[pi+k];
+        }
+      }
+    }
+#endif
+
   };
 
   //
