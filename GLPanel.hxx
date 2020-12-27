@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2020/12/27 15:49:38 kanai Exp $
+// $Id: GLPanel.hxx 2020/12/27 16:35:49 kanai Exp $
 //
 // Copyright (c) 2002-2020 by Takashi Kanai. All rights reserved. 
 //
@@ -18,6 +18,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
@@ -36,7 +37,7 @@ using namespace std;
 #include "GLLight.hxx"
 #include "GLMaterial.hxx"
 
-#include "PNGImage.hxx"
+//#include "PNGImage.hxx"
 
 #include "shaders.h"
 
@@ -89,8 +90,8 @@ public:
 
   void initGLEW( bool flag = false ) {
     GLenum err = glewInit();
-    if( err != GLEW_OK ) cout << "Error: %s" << glewGetErrorString(err) << endl;
-    
+    if( err != GLEW_OK ) std::cerr << "Error: %s" << glewGetErrorString(err) << endl;
+
 #if defined(WIN32)
     if ( flag ) wglSwapIntervalEXT(0);
 #endif
@@ -993,77 +994,49 @@ public:
   void initTexture() {
     if ( numUnits_ ) return;
 
-    int numUnits;
-    ::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits );
-    cout << "maximum texture units: " << numUnits;
+    ::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits_ );
+    std::cout << "maximum texture units: " << numUnits_ << std::endl;
+    ::glGetIntegerv( GL_MAX_TEXTURE_SIZE, &max_tex_size_ );
+    std::cout << max_tex_size_ << " x " << max_tex_size_
+              << " max texture size." << std::endl;
 
-    numUnits_ = 2;
-    std::cout << numUnits_ << " texture units supported." << std::endl;
-
-    // ::glGetIntegerv( GL_MAX_TEXTURE_SIZE, &max_tex_size_ );
-    // std::cout << max_tex_size_ << " x " << max_tex_size_
-    //           << " max texture size." << std::endl;
-
-    //cout << texObj_.size() << " " << numUnits_ << endl;
-    //texObj_.resize( numUnits_ );
-    //texObj_.reserve( numUnits_ );
-    //cout << texObj_.size() << endl;
-    //isTexEnabled_.resize( numUnits_ );
+    texObj_.resize( numUnits_ );
+    isTexEnabled_.resize( numUnits_ );
     for ( int i = 0; i < numUnits_; ++i )
       {
         isTexEnabled_[i] = GL_FALSE;
       }
+    ::glGenTextures( numUnits_, &(texObj_[0]) );
 
     current_tex_id_ = 0;
-
-    ::glGenTextures( numUnits_, texObj_ );
-    for ( int i = 0; i < numUnits_; ++i )
-      cout << texObj_[i] << endl;
   };
 
-  int loadTexture( const char* const filename,
-                   std::vector<unsigned char>& img,
-                   int* format, int* w, int* h ) {
-    initTexture();
+  // int loadTexture( const char* const filename,
+  //                  std::vector<unsigned char>& img,
+  //                  int* format, int* w, int* h ) {
+  //
+  // "non-use PNGImage" version
+  unsigned int loadTexture( unsigned char* image, int w, int h, int channel ) {
 
-    PNGImage pngimage;
-    if ( pngimage.inputFromFile( filename, img ) == false ) return -1;
-
+    // the first load
+    if ( !numUnits_ ) initTexture();
     if ( current_tex_id_ >= numUnits_ ) return -1;
 
     int i = current_tex_id_;
-
-    if ( pngimage.channel()==3) *format = GL_RGB; else *format = GL_RGBA;
-    *w = pngimage.w();
-    *h = pngimage.h();
-
-    //   ::glActiveTextureARB( GL_TEXTURE0_ARB + i );
     ::glBindTexture( GL_TEXTURE_2D, texObj_[i] );
 
-    ::glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    //::glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
     ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-#if 1
-    ::gluBuild2DMipmaps( GL_TEXTURE_2D,
-                         *format,
-                         *w, *h,
-                         *format,
-                         GL_UNSIGNED_BYTE,
-                         &(img[0]) );
-#endif
-  
-#if 0
-    ::glTexImage2D( GL_TEXTURE_2D, 0,
-                    pngimage.channel(),
-                    pngimage.w(), pngimage.h(),
-                    0,
-                    *format, GL_UNSIGNED_BYTE, &(img[0]) );
-#endif
+    if ( channel == 3 )
+      //::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image); 
+      ::gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, image );
+    else if( channel == 4 )
+      //::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+      ::gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image );
 
     //   ::glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
@@ -1074,7 +1047,7 @@ public:
     current_tex_id_++;
 
     ::glBindTexture( GL_TEXTURE_2D, 0 );
-    //cout << "texObj: " << texObj_[i] << endl;
+
     return texObj_[i];
   }
 
@@ -1156,10 +1129,10 @@ private:
 
   // Texture
   int numUnits_;
-  //std::vector<unsigned int> texObj_;
-  //std::vector<bool>isTexEnabled_;
-  unsigned int texObj_[2];
-  int isTexEnabled_[2];
+  std::vector<unsigned int> texObj_;
+  std::vector<bool>isTexEnabled_;
+  // unsigned int texObj_[2];
+  // int isTexEnabled_[2];
   int current_tex_id_;
   int max_tex_size_;
 
