@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLMeshR.hxx 2020/12/26 00:01:00 kanai Exp $
+// $Id: GLMeshR.hxx 2020/12/27 00:37:39 kanai Exp $
 //
 //   OpenGL MeshR draw class
 //
@@ -73,6 +73,7 @@ public:
 
   void drawColor() {
     if ( empty() ) return;
+    if ( mesh().colors().empty() ) return;
 
     ::glShadeModel( GL_FLAT );
     ::glDisable( GL_LIGHTING );
@@ -105,70 +106,89 @@ public:
     if ( empty() ) return;
 
     if ( isSmoothShading_ )
-      ::glShadeModel( GL_SMOOTH );
-    else
-      ::glShadeModel( GL_FLAT );
-
-    ::glEnable( GL_LIGHTING );
-
-    if ( isSmoothShading_ )
       {
+        ::glShadeModel( GL_SMOOTH );
+        ::glEnable( GL_LIGHTING );
+
+        // normals
         ::glNormalPointer( GL_FLOAT, 0, 
-                           (GLfloat *) &(mesh().normals()[0]) );
+                           (GLfloat*) &(mesh().normals()[0]) );
         ::glEnableClientState( GL_NORMAL_ARRAY );
-      }
-    else
-      {
-        ::glDisableClientState( GL_NORMAL_ARRAY );
-      }
 
-    if ( isDrawTexture_ )
-      {
-        //       ::glEnable( GL_TEXTURE_2D );
-        ::glTexCoordPointer( mesh().n_tex(), GL_FLOAT, 0, 
-                             (GLfloat *) &(mesh().texcoords()[0]) );
-        ::glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-      }
-    else
-      {
-        ::glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-      }
+        if ( isDrawTexture_ )
+          {
+            ::glEnable( GL_TEXTURE_2D );
+            ::glTexCoordPointer( mesh().n_tex(), GL_FLOAT, 0, 
+                                 (GLfloat*) &(mesh().texcoords()[0]) );
+            ::glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+          }
 
-    if ( isSmoothShading_ )
-      {
+        // vertices
         ::glVertexPointer( 3, GL_FLOAT, 0, 
                            (GLfloat*) &(mesh().points()[0]) );
         ::glEnableClientState( GL_VERTEX_ARRAY );
-      }
-    else
-      {
-        ::glDisableClientState( GL_VERTEX_ARRAY );
-      }
 
-    mtl_.bind();
+        // material binding
+        mtl_.bind();
 
-    if ( isSmoothShading_ )
-      {
         ::glDrawElements( GL_TRIANGLES, mesh().indices_size(), 
                           GL_UNSIGNED_INT, &(mesh().indices()[0]) );
+
+        if ( isDrawTexture_ )
+          {
+            ::glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+            ::glDisable( GL_TEXTURE_2D );
+          }
+        ::glDisableClientState( GL_NORMAL_ARRAY );
+        ::glDisableClientState( GL_VERTEX_ARRAY );
+
+        ::glDisable( GL_LIGHTING );
+ 
       }
-    else
+    else // isSmoothShading == false 
       {
+        ::glShadeModel( GL_FLAT );
+        ::glEnable( GL_LIGHTING );
+
+        if ( isDrawTexture_ )
+          {
+            ::glEnable( GL_TEXTURE_2D );
+            ::glBindTexture( GL_TEXTURE_2D, mesh().texID() );
+          }
+        else
+          {
+            // material binding
+            mtl_.bind();
+          }
+
         std::vector<float>& points = mesh().points();
         std::vector<float>& fnormals = mesh().fnormals();
+        std::vector<float>& texcoords = mesh().texcoords();
         std::vector<unsigned int>& indices = mesh().indices();
+        std::vector<unsigned int>& tindices = mesh().tindices();
+        int n_tex = mesh().n_tex();
 
 #if 1 // for large model
         ::glBegin( GL_TRIANGLES );
-        unsigned int n_id = 0;
         for ( unsigned int i = 0; i < mesh().numFaces(); ++i )
           {
             unsigned int id0 = indices[TRIANGLE * i];
             unsigned int id1 = indices[TRIANGLE * i + 1];
             unsigned int id2 = indices[TRIANGLE * i + 2];
-            ::glNormal3fv( &(fnormals[ nXYZ * n_id++ ]) );
+            unsigned int tid0, tid1, tid2;
+            if ( isDrawTexture_ )
+              {
+                tid0 = tindices[TRIANGLE * i];
+                tid1 = tindices[TRIANGLE * i + 1];
+                tid2 = tindices[TRIANGLE * i + 2];
+              }
+            //cout << "normal " << fnormals[nXYZ*i] << " " << fnormals[nXYZ*i+1] << " " << fnormals[nXYZ*i+2] << endl;
+            ::glNormal3fv( &(fnormals[ nXYZ * i ]) );
+            if ( isDrawTexture_ ) ::glTexCoord2fv( &(texcoords[ n_tex * tid0 ]) );
             ::glVertex3fv( &(points[ nXYZ * id0 ]) );
+            if ( isDrawTexture_ ) ::glTexCoord2fv( &(texcoords[ n_tex * tid1 ]) );
             ::glVertex3fv( &(points[ nXYZ * id1 ]) );
+            if ( isDrawTexture_ ) ::glTexCoord2fv( &(texcoords[ n_tex * tid2 ]) );
             ::glVertex3fv( &(points[ nXYZ * id2 ]) );
           }
         ::glEnd();
@@ -190,21 +210,13 @@ public:
           }
         ::glEnd();
 #endif
+        if ( isDrawTexture_ )
+          {
+            ::glBindTexture( GL_TEXTURE_2D, 0 );
+            ::glDisable( GL_TEXTURE_2D );
+          }
+        ::glDisable( GL_LIGHTING );
       }
-
-    if ( isDrawTexture_ )
-      {
-        ::glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-      }
-
-    if ( isSmoothShading_ )
-      {
-        ::glDisableClientState( GL_NORMAL_ARRAY );
-        ::glDisableClientState( GL_VERTEX_ARRAY );
-      }
-
-
-    ::glDisable( GL_LIGHTING );
   };
 
   void drawWireframe() {

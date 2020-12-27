@@ -1,8 +1,8 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx $
+// $Id: GLPanel.hxx 2020/12/27 15:49:38 kanai Exp $
 //
-// Copyright (c) 2002-2017 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2002-2020 by Takashi Kanai. All rights reserved. 
 //
 ////////////////////////////////////////////////////////////////////
 
@@ -991,12 +991,12 @@ public:
   // Texture functions
   //
   void initTexture() {
-#if 1
     if ( numUnits_ ) return;
 
-#if 1
-    //::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits_ );
-#endif
+    int numUnits;
+    ::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits );
+    cout << "maximum texture units: " << numUnits;
+
     numUnits_ = 2;
     std::cout << numUnits_ << " texture units supported." << std::endl;
 
@@ -1019,9 +1019,7 @@ public:
     ::glGenTextures( numUnits_, texObj_ );
     for ( int i = 0; i < numUnits_; ++i )
       cout << texObj_[i] << endl;
-  
-#endif
-  }
+  };
 
   int loadTexture( const char* const filename,
                    std::vector<unsigned char>& img,

@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: MeshR.hxx 2020/12/26 16:40:49 kanai Exp $
+// $Id: MeshR.hxx 2020/12/26 17:31:12 kanai Exp $
 //
 // Mesh class for Rendering
 //
@@ -315,11 +315,11 @@ public:
   void reservePoints( int n )  { n_points_  = n * nXYZ;     points_.resize( n_points_ ); };
   void reserveNormals( int n ) { n_normals_ = n * nXYZ;     normals_.resize( n_normals_ ); };
   void reserveTexcoords( int n, int t ) { n_texcoords_ = n * t; texcoords_.resize( n_texcoords_ ); };
-  void reserveColors( int n ) { n_colors_ = n * nXYZ;       colors_.reserve( n_colors_ ); };
-  void reserveColorIds( int n ) { n_color_ids_ = n;         color_ids_.reserve( n_color_ids_ ); };
-  void reserveIndices( int n ) { n_indices_ = n * TRIANGLE; indices_.reserve( n_indices_ ); };
-  void reserveNIndices( int n ) { n_nindices_ = n * TRIANGLE; nindices_.reserve( n_nindices_ ); };
-  void reserveTIndices( int n ) { n_tindices_ = n * TRIANGLE; tindices_.reserve( n_tindices_ ); };
+  void reserveColors( int n ) { n_colors_ = n * nXYZ;       colors_.resize( n_colors_ ); };
+  void reserveColorIds( int n ) { n_color_ids_ = n;         color_ids_.resize( n_color_ids_ ); };
+  void reserveIndices( int n ) { n_indices_ = n * TRIANGLE; indices_.resize( n_indices_ ); };
+  void reserveNIndices( int n ) { n_nindices_ = n * TRIANGLE; nindices_.resize( n_nindices_ ); };
+  void reserveTIndices( int n ) { n_tindices_ = n * TRIANGLE; tindices_.resize( n_tindices_ ); };
 
   // resize
   void resizePoints( int n )  { n_points_  += (n * nXYZ);     points_.resize( n_points_ ); };
@@ -504,6 +504,7 @@ public:
     //   std::cout << "points " << points_.size() << std::endl;
 
     normals_.resize( points_.size() );
+    if ( !(nindices_.empty()) ) nindices_.clear();
 
     for ( unsigned int i = 0; i < normals_.size(); ++i ) normals_[i] = .0f;
 
@@ -562,15 +563,21 @@ public:
         fcounts[ id2 ]++;
         //weights[ id2 ] += w;
 
+        // // add NIndices (vertex index = normal index)
+        // addNIndex( id0 );
+        // addNIndex( id1 );
+        // addNIndex( id2 );
+
         ++f_id;
       }
 
     // divided by fcount and normalize
     for ( unsigned int i = 0; i < numPoints(); ++i )
       {
-        normals_[ nXYZ * i ]     /= (float) fcounts[i];
-        normals_[ nXYZ * i + 1 ] /= (float) fcounts[i];
-        normals_[ nXYZ * i + 2 ] /= (float) fcounts[i];
+        float fc = (float) fcounts[i];
+        normals_[ nXYZ * i ]     /= fc;
+        normals_[ nXYZ * i + 1 ] /= fc;
+        normals_[ nXYZ * i + 2 ] /= fc;
 
         Eigen::Vector3f nrm1( normals_[ nXYZ * i ],
                               normals_[ nXYZ * i + 1 ],
@@ -580,6 +587,7 @@ public:
         normals_[ nXYZ * i ]     = nrm1.x();
         normals_[ nXYZ * i + 1 ] = nrm1.y();
         normals_[ nXYZ * i + 2 ] = nrm1.z();
+        //cout << nrm1 << endl;
       }
 
     n_normals_ = normals_.size();
@@ -635,6 +643,11 @@ public:
         normals_[ nXYZ * (id2) + 1 ] += nrm.y();
         normals_[ nXYZ * (id2) + 2 ] += nrm.z();
         weights[ id2 ] += w;
+
+        // // add NIndices (vertex index = normal index)
+        // addNIndex( id0 );
+        // addNIndex( id1 );
+        // addNIndex( id2 );
       }
 
     // divided by weight and normalize
