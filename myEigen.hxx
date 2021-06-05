@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: myEigen.hxx $
+// $Id: myEigen.hxx 2021/06/05 13:36:04 kanai Exp $
 //
-// Copyright (c) 2017 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 
