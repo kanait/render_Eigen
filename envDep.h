@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: envDep.h,v 1.2 2002/12/25 08:21:38 kanai Exp $
+// $Id: envDep.h 2021/06/13 15:18:03 kanai Exp $
 //
-// Copyright (c) 2002 by Keio Research Institute at SFC
-// All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

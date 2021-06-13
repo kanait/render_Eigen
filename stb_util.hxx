@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: stb_util.hxx 2021/06/13 03:19:25 kanai Exp $
+// $Id: stb_util.hxx 2021/06/13 15:20:47 kanai Exp $
 //
-// Copyright (c) Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

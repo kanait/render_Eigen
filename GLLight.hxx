@@ -1,10 +1,11 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLLight.hxx,v 1.2 2002/12/25 08:11:37 kanai Exp $
+// $Id: GLLight.hxx 2021/06/13 15:09:27 kanai Exp $
 //
 //   Light class for OpenGL
 //
-// Copyright (c) 2002-2017 by Takashi Kanai. All rights reserved.
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

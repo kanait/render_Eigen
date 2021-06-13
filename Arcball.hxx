@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: Arcball.hxx $
+// $Id: Arcball.hxx 2021/06/13 15:08:42 kanai Exp $
 //
-// Copyright (c) 2002-2010 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

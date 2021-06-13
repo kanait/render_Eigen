@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: mydef.h,v 1.3 2004/01/15 18:11:09 kanai Exp $
+// $Id: mydef.h 2021/06/13 15:19:36 kanai Exp $
 //
-// Copyright (c) 2002 by Keio Research Institute at SFC
-// All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

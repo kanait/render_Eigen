@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////////
+//
+// $Id: color.vert 2021/06/13 15:17:53 kanai Exp $
+//
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
+//
+////////////////////////////////////////////////////////////////////
+
 #version 120
 
 // Input vertex data, different for all executions of this shader.

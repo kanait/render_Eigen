@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLMeshVBO.hxx 2017/11/19 13:59:56 kanai Exp $
+// $Id: GLMeshVBO.hxx 2021/06/13 15:11:10 kanai Exp $
 //
-// GLMeshVBO.hxx
 // OpenGL Mesh VBO draw class
 //
-// Copyright (c) 2005-2017 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

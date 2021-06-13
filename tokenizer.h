@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: tokenizer.h,v 1.1.1.1 2005/04/01 17:12:53 kanai Exp $
+// $Id: tokenizer.h 2021/06/13 15:22:02 kanai Exp $
 //
-// Copyright (c) 2002 by Keio Research Institute at SFC
-// All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

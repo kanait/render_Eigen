@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: ColorConv.hxx 2017/11/19 13:06:43 kanai Exp $
+// $Id: ColorConv.hxx 2021/06/13 15:09:07 kanai Exp $
 //
-// Copyright (c) 2002-2017 by Takashi Kanai. All rights reserved.
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 

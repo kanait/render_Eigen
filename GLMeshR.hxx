@@ -1,10 +1,11 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLMeshR.hxx 2020/12/27 00:37:39 kanai Exp $
+// $Id: GLMeshR.hxx 2021/06/13 15:10:44 kanai Exp $
 //
 //   OpenGL MeshR draw class
 //
-// Copyright (c) 2004-2017 by Takashi Kanai. All rights reserved. 
+// Copyright (c) 2021 Takashi Kanai
+// Released under the MIT license
 //
 ////////////////////////////////////////////////////////////////////
 
