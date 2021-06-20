@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2021/06/13 15:11:50 kanai Exp $
+// $Id: GLPanel.hxx 2021/06/20 15:14:39 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 using namespace std;
 
 #include "myEigen.hxx"
