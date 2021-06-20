@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: ColorConv.hxx 2021/06/13 15:09:07 kanai Exp $
+// $Id: ColorConv.hxx 2021/06/20 13:41:26 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -20,8 +20,10 @@ class ColorConv {
 public:
 
   ColorConv(){
-    rgbtohsv( Eigen::Vector3f( 0.0f, .0f, 1.0f ), max_hsv_ ); // blue
-    rgbtohsv( Eigen::Vector3f( 1.0f, .0f, 0.0f ), min_hsv_ ); // red
+    Eigen::Vector3f a( 0.0f, .0f, 1.0f );
+    Eigen::Vector3f b( 1.0f, .0f, 0.0f );
+    rgbtohsv( a, max_hsv_ ); // blue
+    rgbtohsv( b, min_hsv_ ); // red
     setMinMaxValue( .0f, 1.0f );
   };
   ~ColorConv(){};
