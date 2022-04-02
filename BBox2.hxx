@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: BBox2.hxx 2021/06/13 15:08:54 kanai Exp $
+// $Id: BBox2.hxx 2022/04/02 15:29:32 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -29,19 +29,20 @@ public:
   BBox2() {};
   ~BBox2() {};
 
-  void clear() { start.set(0,0); end.set(0,0); };
-  void setStart( int x, int y ) { start.set( x, y ); };
-  void setEnd( int x, int y ) { end.set( x, y ); };
+  void clear() {
+    start = Eigen::Vector2i::Zero();
+    end = Eigen::Vector2i::Zero();
+  };
+  void setStart( int x, int y ) { start = Eigen::Vector2i( x, y ); };
+  void setEnd( int x, int y ) { end = Eigen::Vector2i( x, y ); };
 
-  int& sx() { return start.x; };
-  int& sy() { return start.y; };
-  int& ex() { return end.x; };
-  int& ey() { return end.y; };
+  int& sx() { return start.x(); };
+  int& sy() { return start.y(); };
+  int& ex() { return end.x(); };
+  int& ey() { return end.y(); };
 
   bool isRectangle() {
-    if ( (std::abs(start.x - end.x) > 4) && (std::abs(start.y - end.y) > 4) )
-      return true;
-    return false;
+    return ( (std::abs(start.x() - end.x()) > 4) && (std::abs(start.y() - end.y()) > 4) );
   };
 };
   
