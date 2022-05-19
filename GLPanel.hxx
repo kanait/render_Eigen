@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2021/06/20 15:14:39 kanai Exp $
+// $Id: GLPanel.hxx 2022/05/19 16:09:04 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -941,9 +941,10 @@ public:
     manip_.setScrnXY( x, y );
   };
 
-  void updateWheelZoom( int x ) {
+  void updateWheelZoom( float x ) {
     manip_.updateWheelZoom( x );
   }
+
   void updateZoom( int x, int y ) {
     manip_.updateZoom( x, y, manip_.scrn_x(), manip_.scrn_y() );
     manip_.setScrnXY( x, y );

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: Arcball.hxx 2021/06/13 15:08:42 kanai Exp $
+// $Id: Arcball.hxx 2022/05/19 16:06:31 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -164,7 +164,7 @@ public:
     seezo_ += (x - ox) * .01 / mag_ * magObject_;
   };
 
-  void updateWheelZoom( int x ) {
+  void updateWheelZoom( float x ) {
     seezo_ -= wheelScale_ * x;
   };
 

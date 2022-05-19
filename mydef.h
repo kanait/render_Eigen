@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: mydef.h 2021/06/13 15:19:36 kanai Exp $
+// $Id: mydef.h 2022/04/16 00:04:22 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -47,5 +47,9 @@ typedef	short Id;
 #define SQRT2           1.41421356
 #define SQRT3           1.7320508
 #define SQRT6           2.44948974
+
+#define DEG90           1.57079632675     // M_PI/2
+#define DEG150          2.617993877916667 // M_PI*5/6
+#define DEG360          6.283185307       // M_PI*2
 
 #endif // _MYDEF_H
