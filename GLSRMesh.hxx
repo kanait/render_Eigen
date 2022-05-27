@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLSRMesh.hxx 2022/04/02 15:26:29 kanai Exp $
+// $Id: GLSRMesh.hxx 2022/05/28 02:06:38 kanai Exp $
 //
 //   OpenGL SRMesh rendering class
 //
@@ -28,8 +28,8 @@
 #include "PMVertex.hxx"
 #include "GLMesh.hxx"
 
-//static float blackvec[] = {0.0f, 0.0f, 0.0f};
-//static float bluevec[] = {0.0f, 0.0f, 1.0f};
+static float blackvec[] = {0.0f, 0.0f, 0.0f};
+static float bluevec[] = {0.0f, 0.0f, 1.0f};
 //  static float redvec[] = {1.000, 0.000, 0.000};
 //  static float greenvec[] = {0.000, 1.000, 0.000}; 
 
