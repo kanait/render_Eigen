@@ -1,9 +1,11 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: envDep.h 2021/06/13 15:18:03 kanai Exp $
+// $Id: envDep.h 2022/05/28 21:46:13 kanai Exp $
 //
-// Copyright (c) 2021 Takashi Kanai
-// Released under the MIT license
+// Copyright (c) 2002 Takashi Kanai
+//
+// This software is released under the MIT License.
+// http://opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////
 
@@ -28,22 +30,25 @@
 //#include "config.h"
 #endif
 
-#if defined(_WIN32) || defined(_WIN64)
+//#if defined(WIN32) || defined(_WIN64)
+#ifdef _WINDOWS
 #include <windows.h>
+#include <winbase.h>
 #endif
 
-#if defined(_WINDOWS)
-#include "stdafx.h"
-#endif
-
-// M_PI
-#if defined(_WIN32) || defined(_WIN64)
-//#define M_PI 3.14159265358979323846
-
+// M_PI ‚Ì’è‹`
+//#if defined(WIN32) || defined(_WIN64)
+#ifdef _WINDOWS
+#define M_PI     3.14159265358979323846
 /*  #if !defined(__MINGW32__) */
 /*  #define M_SQRT3		1.732051	// sqrt(3) */
 /*  #endif */
+#endif // _WINDOWS
 
-#endif // WIN32
+#ifndef _WINDOWS
+#define TRUE true
+#define FALSE false
+#endif
+
 
 #endif // _ENVDEP_H
