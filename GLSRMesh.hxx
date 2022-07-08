@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLSRMesh.hxx 2022/05/28 02:06:38 kanai Exp $
+// $Id: GLSRMesh.hxx 2022/06/11 22:53:30 kanai Exp $
 //
 //   OpenGL SRMesh rendering class
 //
@@ -18,11 +18,6 @@
 
 #include "myGL.hxx"
 #include "myEigen.hxx"
-//  #include <Point3.h>
-// #include <Vector3.h>
-// #ifdef VM_INCLUDE_NAMESPACE
-// using namespace kh_vecmath;
-// #endif // VM_INCLUDE_NAMESPACE
 
 #include "SRMesh.hxx"
 #include "PMVertex.hxx"
@@ -63,21 +58,24 @@ public:
     mtl_.bind();
 
     ::glBegin( GL_TRIANGLES );
-    foreach ( std::list<PMAFace*>, mesh_->active_faces(), fc )
-      {
-        Eigen::Vector3d& nrm = (*fc)->normal();
-        ::glNormal3d( nrm.x(), nrm.y(), nrm.z() );
-        //glm.bindingMaterial( &(mesh_->material) );
+    // foreach ( std::list<PMAFace*>, mesh_->active_faces(), fc )
+    for ( auto fi : mesh_->active_faces() ) {
+      std::shared_ptr<PMAFace> fc = fi.second;
+      Eigen::Vector3d& nrm = fc->normal();
+      ::glNormal3d( nrm.x(), nrm.y(), nrm.z() );
+      //glm.bindingMaterial( &(mesh_->material) );
 
-        for ( int i = 0; i < 3; ++i )
-          {
-            //foreach ( std::vector<PMAVertex*>, (*fc)->vertex, fv ) {
-            //        PMVertex& vt = (*fc)->pmavertex(i)->pmvertex();
-            Eigen::Vector3d& p = (*fc)->pmavertex(i)->pmvertex().point();
-            ::glVertex3d( p.x(), p.y(), p.z() );
-            //cout << "\tmate " << fc->face_mate[i]->id << endl;
-          }
+      // cout << "fc " << fc->pmface().aid() << " vt " ;
+      for ( int i = 0; i < 3; ++i ) {
+        //foreach ( std::vector<PMAVertex*>, (*fc)->vertex, fv ) {
+        PMVertex& vt = fc->pmavertex(i)->pmvertex();
+        // cout << vt.aid() << " ";
+        Eigen::Vector3d& p = fc->pmavertex(i)->pmvertex().point();
+        ::glVertex3d( p.x(), p.y(), p.z() );
+        //cout << "\tmate " << fc->face_mate[i]->id << endl;
       }
+      // cout << endl;
+    }
     ::glEnd();
     ::glDisable( GL_LIGHTING );
   };
@@ -89,11 +87,13 @@ public:
     ::glColor3fv( blackvec );
     ::glLineWidth( .1f );
 
-    foreach ( std::list<PMAFace*>, mesh_->active_faces(), fc ) {
+    // foreach ( std::list<PMAFace*>, mesh_->active_faces(), fc ) {
+    for ( auto fi : mesh_->active_faces() ) {
+      std::shared_ptr<PMAFace> fc = fi.second;
 
       ::glBegin( GL_LINE_LOOP );
       for ( int i = 0; i < 3; ++i ) {
-        Eigen::Vector3d& p = (*fc)->pmavertex(i)->pmvertex().point();
+        Eigen::Vector3d& p = fc->pmavertex(i)->pmvertex().point();
         ::glVertex3d( p.x(), p.y(), p.z() );
       }
       ::glEnd();
@@ -109,12 +109,12 @@ public:
     ::glColor3fv( bluevec );
 
     ::glBegin( GL_POINTS );
-    foreach ( std::list<PMAVertex*>, mesh_->active_vertices(), vt )
-      {
+    // foreach ( std::list<PMAVertex*>, mesh_->active_vertices(), vt )
+    for ( auto vt : mesh_->active_vertices() ) {
 //      PMVertex* p = (*vt)->vertex;
-        Eigen::Vector3d& p = (*vt)->pmvertex().point();
-        ::glVertex3d( p.x(), p.y(), p.z() );
-      }
+      Eigen::Vector3d& p = vt.second->pmvertex().point();
+      ::glVertex3d( p.x(), p.y(), p.z() );
+    }
     ::glEnd();
   };
 
