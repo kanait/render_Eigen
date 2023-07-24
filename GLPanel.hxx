@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2022/05/19 16:09:04 kanai Exp $
+// $Id: GLPanel.hxx 2023/07/24 17:32:24 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -90,10 +90,15 @@ public:
   };
 
   void initGLEW( bool flag = false ) {
+
+#ifdef __APPLE__
+    glewExperimental = GL_TRUE;
+#endif
+
     GLenum err = glewInit();
     if( err != GLEW_OK ) std::cerr << "Error: %s" << glewGetErrorString(err) << endl;
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
     if ( flag ) wglSwapIntervalEXT(0);
 #endif
 
@@ -1024,14 +1029,26 @@ public:
     if ( !numUnits_ ) initTexture();
     if ( current_tex_id_ >= numUnits_ ) return -1;
 
+    cout << "w " << w << " h " << h << " c " << channel << endl;
+
     int i = current_tex_id_;
     ::glBindTexture( GL_TEXTURE_2D, texObj_[i] );
 
-    //::glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    if (channel==3) 
+      ::glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    else if (channel==4)
+      ::glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+
     ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    // ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+    ::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    //::glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
     if ( channel == 3 )
       //::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image); 
