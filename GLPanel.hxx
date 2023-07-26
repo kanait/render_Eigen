@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////
 //
-// $Id: GLPanel.hxx 2023/07/24 17:32:24 kanai Exp $
+// $Id: GLPanel.hxx 2023/07/25 00:15:20 kanai Exp $
 //
 // Copyright (c) 2021 Takashi Kanai
 // Released under the MIT license
@@ -28,8 +28,8 @@ using namespace std;
 
 #define GLEW_STATIC 1
 #include <GL/glew.h>
-#if defined(WIN32)
-#include "GL/wglew.h"
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <GL/wglew.h>
 #endif
 // gl.h is included in glew.h
 //#include <GL/gl.h>
@@ -98,10 +98,9 @@ public:
     GLenum err = glewInit();
     if( err != GLEW_OK ) std::cerr << "Error: %s" << glewGetErrorString(err) << endl;
 
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
-    if ( flag ) wglSwapIntervalEXT(0);
-#endif
-
+// #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+//     if ( flag ) wglSwapIntervalEXT(0);
+// #endif
   };
 
   // シェーダの初期化
