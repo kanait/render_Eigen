@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //
-// $Id: GLMesh.hxx 2021/06/13 15:10:06 kanai Exp $
+// $Id: GLMesh.hxx 2024/06/23 00:18:39 kanai Exp $
 //
 //   Generic OpenGL Mesh draw class
 //
@@ -65,6 +65,7 @@ public:
     isDrawPoint_ = false;
     isDrawTexture_ = false;
     isSmoothShading_ = false;
+    mtl_.set(0);
     mtl_point_.set(13);
     mtl_selected_.set(10);
     setPointColor( .0f, .0f, 1.0f );
@@ -147,8 +148,8 @@ public:
   void setIsDrawShading( bool f ) { isDrawShading_ = f; };
   void setIsDrawColor( bool f ) { isDrawColor_ = f; };
   void setIsDrawTexture( bool f ) { isDrawTexture_ = f; };
-  void setIsSmoothShading( bool f ) { 
-    isSmoothShading_ = f; 
+  void setIsSmoothShading( bool f ) {
+    isSmoothShading_ = f;
     if ( isSmoothShading_ == true )
       {
         ::glShadeModel( GL_SMOOTH );
@@ -165,6 +166,7 @@ public:
   bool isDrawTexture() const { return isDrawTexture_; };
   bool isSmoothShading() const { return isSmoothShading_; };
 
+#if 0
   void drawSphere( Eigen::Vector3f& p, float radius, GLMaterial& glm ) {
     ::glEnable( GL_LIGHTING );
 
@@ -183,6 +185,7 @@ public:
 
     ::glDisable( GL_LIGHTING );
   };
+#endif
 
   virtual void draw() {
     ::glPushMatrix();
