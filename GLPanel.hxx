@@ -71,6 +71,13 @@ public:
     // 2D transformation
     resetView2d();
 
+    // Texture state (must be deterministic across platforms/drivers).
+    numUnits_ = 0;
+    current_tex_id_ = 0;
+    max_tex_size_ = 0;
+    texObj_.clear();
+    isTexEnabled_.clear();
+
     isProgramUsed_ = PHONG_SHADING;
   };
 
@@ -1081,7 +1088,15 @@ void setView2d() {
   void initTexture() {
     if ( numUnits_ ) return;
 
-    ::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits_ );
+    // GL_MAX_TEXTURE_UNITS_ARB can be 0 on some drivers/contexts.
+    // Prefer modern enums and keep a fallback path.
+    ::glGetIntegerv( GL_MAX_TEXTURE_IMAGE_UNITS, &numUnits_ );
+    if (numUnits_ <= 0) {
+      ::glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &numUnits_ );
+    }
+    if (numUnits_ <= 0) {
+      numUnits_ = 1;
+    }
     std::cout << "maximum texture units: " << numUnits_ << std::endl;
     ::glGetIntegerv( GL_MAX_TEXTURE_SIZE, &max_tex_size_ );
     std::cout << max_tex_size_ << " x " << max_tex_size_
