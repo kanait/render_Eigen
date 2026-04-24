@@ -25,9 +25,17 @@ public:
   int stb_load_texture( const char* const filename, GLPanel& pane ) {
     int w, h, comp;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* image = stbi_load(filename, &w, &h, &comp, STBI_rgb); 
+    // Keep native channels to stay consistent with the channel count passed to GL.
+    // Forcing STBI_rgb while using `comp` (original channels) can mismatch on RGBA PNGs.
+    unsigned char* image = stbi_load(filename, &w, &h, &comp, 0);
     if(image == nullptr)
       throw(std::string("Failed to load texture"));
+
+    // GLPanel::loadTexture currently supports 3/4 channels.
+    if (comp != 3 && comp != 4) {
+      stbi_image_free(image);
+      throw(std::string("Unsupported texture channels (expected 3 or 4)"));
+    }
 
     unsigned int id = pane.loadTexture( image, w, h, comp );
 
